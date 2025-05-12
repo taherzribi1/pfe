@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits à vendre{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Produits à vendre</h1>
+        
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                            <img src="{{ asset('uploads/images/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ asset('images/default-product.jpg') }}" class="card-img-top" alt="Image par défaut" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|slice(0, 100) }}...</p>
+                            <p class="text-primary font-weight-bold">{{ product.price }} TND</p>
+                        </div>
+                        
+                        <div class="card-footer bg-white">
+                            <a href="{{ path('app_home_show', {'id': product.id}) }}" class="btn btn-primary btn-block">Voir détails</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">Aucun produit à vendre pour le moment.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

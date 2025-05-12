@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Product{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">
+        <i class="fa-solid fa-plus-circle me-2"></i>Ajouter un Nouveau livre
+    </h1>
+    {{ include('product/_form.html.twig') }}
+    <br>
+   
+</div>
+
+    {% endblock %}

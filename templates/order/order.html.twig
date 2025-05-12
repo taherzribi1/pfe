@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% block title %}Commandes{% endblock %}
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h4 mb-0"><i class="fas fa-shopping-bag me-2"></i>Liste des Commandes</h1>
+                <form method="get" action="{{ path('app_orders_show') }}" class="w-50">
+                    <div class="input-group">
+                        <input type="number" name="search_id" class="form-control" 
+                               placeholder="Rechercher par ID..." 
+                               value="{{ app.request.query.get('search_id') }}">
+                        <button type="submit" class="btn btn-light">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            {% include "layouts/flash_msg.html.twig" %}
+            
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Client</th>
+                            <th>Contact</th>
+                            <th>Localisation</th>
+                            <th class="text-end">Montant</th>
+                            <th class="text-center">Statut</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td class="text-center fw-bold">#{{ order.id }}</td>
+                            <td>
+                                <div class="fw-semibold">{{ order.firstName }} {{ order.lastName }}</div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-phone me-2 text-muted"></i>{{ order.phone }}</div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-city me-2 text-muted"></i>{{ order.city.name }}</div>
+                                <small class="text-muted">{{ order.adresse }}</small>
+                            </td>
+                            <td class="text-end">
+                                <span class="badge bg-success rounded-pill fs-6">
+                                    {{ (order.totalPrice + order.city.shippingCost)|number_format(2) }} TND
+                                </span>
+                                {% if order.city.shippingCost > 0 %}
+                                    <small class="d-block text-muted">dont {{ order.city.shippingCost }} TND de frais</small>
+                                {% endif %}
+                                <td class="text-center">
+    {% if order.isCompleted  %}
+        <span class="badge bg-success">Terminée</span>
+    {% else  %}
+        <span class="badge bg-warning text-dark">En cours</span>
+    {% endif %}
+</td>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('app_order_show', {'id': order.id }) }}" 
+                                   class="btn btn-sm btn-outline-primary" 
+                                   title="Voir les détails"
+                                   data-bs-toggle="tooltip">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-box-open fa-3x mb-3"></i>
+                                    <h5>Aucune commande trouvée</h5>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Total: {{ orders|length }} commande(s)</small>
+                <a href="{{ path('app_archived_orders') }}" class="btn btn-sm btn-outline-secondary me-2">
+                    <i class="fas fa-archive me-1"></i>Voir les archives
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// Activation des tooltips Bootstrap
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+})
+</script>
+{% endblock %}

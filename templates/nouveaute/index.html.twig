@@ -1,0 +1,378 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveautés{% endblock %}
+
+{% block body %}
+    <!-- Featured Books -->
+<main class="container py-5" id="featured-books">
+  <h2 class="section-title fw-bold">Les dernières livres ajoutés</h2>
+  <div class="row g-4">
+    {% for product in products %}
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="book-card h-100">
+          <div class="position-relative overflow-hidden">
+            <img alt="Book cover" class="book-cover" src="{{ asset('uploads/images/' ~ product.image) }}"/>
+            
+            {% if product.stock > 0 %}
+              <span class="stock-badge">
+                <i class="fas fa-check-circle me-1"></i> Disponible
+              </span>
+            {% else %}
+              <span class="stock-badge bg-secondary">
+                <i class="fas fa-times-circle me-1"></i> Rupture
+              </span>
+            {% endif %}
+            
+            {% if product.getTypeProduit() == 'à vendre' %}
+              <span class="price-tag">{{product.price}} TND</span>
+            {% else %}
+              <span class="price-tag" style="background: #00b894;">À emprunter</span>
+            {% endif %}
+          </div>
+          
+          <div class="card-body">
+            <a href="{{path('app_home_product_show', {'id':product.id}) }}" class="text-decoration-none">
+              <h5 class="card-title fw-bold mb-1">{{product.name}}</h5>
+            </a>
+            <p class="text-muted mb-3">{{product.auteur}}</p>
+            
+            <!-- Ajout de l'ISBN ici -->
+            <div class="isbn-info mb-3 d-flex align-items-center gap-2">
+              <span class="badge bg-light text-dark fs-sm">
+               
+                N'ISBN: {{ product.ISBN }}
+              </span>
+            </div>
+
+            {% if product.stock > 0 %}
+              {% if product.getTypeProduit() == 'à vendre' %}
+                <a class="btn btn-custom w-100" href="{{path('app_cart_new',{'id':product.id})}}">
+                  <i class="fas fa-shopping-cart me-2"></i>
+                  Ajouter au panier
+                </a>
+              {% elseif product.getTypeProduit() == 'à emprunter' %}
+                <a class="btn btn-custom w-100" href="{{path('app_emprunt_reservation',{'id':product.id})}}">
+                  <i class="fas fa-calendar-check me-2"></i>
+                  Réserver
+                </a>
+              {% endif %}
+            {% else %}
+              <button class="btn btn-secondary w-100" disabled>
+                <i class="fas fa-ban me-2"></i>
+                Indisponible
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+<footer class="bg-dark text-white pt-5 pb-4">
+  <div class="container">
+    <div class="row gy-4">
+      <!-- Logo et description -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-book-open fa-2x text-primary me-2" aria-hidden="true"></i>
+          <span class="fs-4 fw-bold">Le Coin des Livres</span>
+        </div>
+        <p class="text-light opacity-85 mb-4">
+          Découvrez des milliers de livres dans tous les genres littéraires. Nous apportons la lecture à votre porte !
+        </p>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-primary btn-sm rounded-circle"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="btn btn-info btn-sm rounded-circle"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="btn btn-danger btn-sm rounded-circle"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="btn btn-success btn-sm rounded-circle"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+
+      <!-- Liens rapides -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Navigation</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a href="{{path('app_home')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-home text-primary me-2"></i> Accueil
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="{{path('app_services')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-hand-holding-heart text-primary me-2"></i> Services
+            </a>
+          </li>
+          <li class="mb-2">
+            <a href="{{path('app_about')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-info-circle text-primary me-2"></i> À propos
+            </a>
+          </li>
+         
+        </ul>
+      </div>
+
+     
+      <!-- Contact -->
+       <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Contactez-nous</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+            <span class="text-light opacity-85">Rue Afrane km 4.5, Sfax</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-phone-alt text-primary me-2"></i>
+            <span  class="text-light opacity-85">+216 55447998</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-envelope text-primary me-2"></i>
+            <span  class="text-light opacity-85">contact@lecoindeslivres.com</span>
+          </li>
+          <li>
+            <i class="fas fa-clock text-primary me-2"></i>
+            <span class="text-light opacity-85">Lun-Ven : 9h-18h</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr class="my-4 border-light opacity-25">
+
+    <!-- Section copyright -->
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        <p class="small mb-0 text-light opacity-85">&copy; 2025 Le Coin des Livres. Tous droits réservés.</p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="#" class="text-light text-decoration-none me-3 hover-primary">Confidentialité</a>
+        <a href="#" class="text-light text-decoration-none hover-primary">Conditions d'utilisation</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer a {
+    transition: all 0.3s ease;
+  }
+  
+  footer a:hover {
+    color: var(--bs-primary) !important;
+    text-decoration: underline !important;
+  }
+  
+
+  :root {
+    --primary-color: #6c5ce7;
+    --secondary-color: #a29bfe;
+    --accent-color: #fd79a8;
+    --dark-color: #2d3436;
+    --light-color: #f5f6fa;
+  }
+  
+  .hero-gradient {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  }
+  
+  .book-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  
+  .book-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  }
+  
+  .book-cover {
+    height: 280px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .book-card:hover .book-cover {
+    transform: scale(1.05);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+    background: white;
+  }
+  
+  .price-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--accent-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  }
+  
+  .stock-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+  
+  .btn-custom {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-custom:hover {
+    background: var(--dark-color);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .navbar-style {
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
+  
+  .nav-link {
+    font-weight: 500;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: var(--primary-color);
+  }
+  
+  .dropdown-menu {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 10px 0;
+  }
+  
+  .dropdown-item:hover {
+    background: var(--light-color);
+    color: var(--primary-color);
+  }
+  
+  .section-title {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 2rem;
+  }
+  
+  .section-title:after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 4px;
+    background: var(--primary-color);
+    bottom: -10px;
+    left: 0;
+    border-radius: 2px;
+  }
+  
+  footer {
+    background: var(--dark-color);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  footer:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  }
+  
+  .footer-links li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .footer-links a {
+    position: relative;
+    padding-left: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    padding-left: 10px;
+    color: white !important;
+  }
+  
+  .footer-links a:before {
+    content: '→';
+    position: absolute;
+    left: -15px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: var(--accent-color);
+  }
+  
+  .footer-links a:hover:before {
+    left: -5px;
+    opacity: 1;
+  }
+  
+  .social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    margin-right: 10px;
+  }
+  
+  .social-icon:hover {
+    background: var(--primary-color);
+    transform: translateY(-3px);
+  }
+  
+  .floating-action-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-action-btn:hover {
+    transform: scale(1.1) translateY(-5px);
+    background: var(--accent-color);
+  }
+</style>
+
+{% endblock %}

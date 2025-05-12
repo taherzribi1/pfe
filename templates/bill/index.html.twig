@@ -1,0 +1,75 @@
+<link rel="stylesheet" href="{{'assets/css/bootstrap.css'}}">
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    thead {
+        background: #f2f2f2;
+    }
+</style>
+
+<div class="container">
+    <h2>Commande n° : {{order.id}}</h2>
+    <hr>
+    <span>Date : {{order.createAt|date_modify("-1 hour")|date("d/m/Y H:i")}}</span>
+    <br><br><br>
+    
+    <h5>Informations du client :</h5>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Ville</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{order.firstName}}</td>
+                <td>{{order.lastName}}</td>
+                <td>{{order.phone}}</td>
+                <td>{{order.adresse}}</td>
+                <td>{{order.city.name}}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h5>Détails de la commande :</h5>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nom du produit</th>
+                <th>Auteur</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+                <th>Prix Total</th>
+            </tr>   
+        </thead>
+        <tbody>
+            {% for product in order.orderProducts %}
+                <tr>
+                    <td>{{product.product.name}}</td>
+                    <td>{{product.product.auteur}}</td>
+                    <td>{{product.product.price}} TND</td>
+                    <td>{{product.qte}}</td>
+                    <td>{{product.product.price * product.qte}} TND</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <span>Prix de livraison : {{order.city.shippingCost}} TND</span>
+    <hr>
+    <h3>Total à payer : {{order.totalPrice + order.city.shippingCost}} TND</h3>
+</div>

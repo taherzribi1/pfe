@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ville{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <!-- Titre principal -->
+    <h1 class="mb-4">
+        <i class="fa-solid fa-plus-circle me-2"></i> Ajouter une Ville
+    </h1>
+    
+    <!-- Carte contenant le formulaire -->
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <!-- Inclusion du formulaire -->
+            {{ include('city/_form.html.twig') }}
+            
+            <!-- Actions: Enregistrer et Annuler -->
+            <div class="d-flex gap-3 align-items-center mt-4">
+                <!-- Bouton Enregistrer -->
+                <button type="submit" form="city_form" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Enregistrer
+                </button>
+                
+                <!-- Bouton Annuler -->
+                <a href="{{ path('app_city_index') }}" class="btn btn-outline-danger d-flex align-items-center">
+                    <i class="fas fa-times me-2"></i> Annuler
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

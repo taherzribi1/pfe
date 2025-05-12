@@ -1,0 +1,83 @@
+{# src/Templates/Order/archived_orders.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Commandes Archivées{% endblock %}
+{% block body %}
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-warning text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h4 mb-0"><i class="fas fa-archive me-2"></i>Commandes Archivées</h1>
+                <a href="{{ path('app_orders_show') }}" class="btn btn-light">
+                    <i class="fas fa-shopping-bag me-2"></i>Voir les commandes actives
+                </a>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            {% include "layouts/flash_msg.html.twig" %}
+            
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Client</th>
+                            <th>Contact</th>
+                            <th>Localisation</th>
+                            <th class="text-end">Montant</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td class="text-center fw-bold">#{{ order.id }}</td>
+                            <td>
+                                <div class="fw-semibold">{{ order.firstName }} {{ order.lastName }}</div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-phone me-2 text-muted"></i>{{ order.phone }}</div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-city me-2 text-muted"></i>{{ order.city.name }}</div>
+                                <small class="text-muted">{{ order.adresse }}</small>
+                            </td>
+                            <td class="text-end">
+                                <span class="badge bg-success rounded-pill fs-6">
+                                    {{ (order.totalPrice + order.city.shippingCost)|number_format(2) }} TND
+                                </span>
+                                {% if order.city.shippingCost > 0 %}
+                                    <small class="d-block text-muted">dont {{ order.city.shippingCost }} TND de frais</small>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('app_order_restore', {'id': order.id}) }}" 
+                                    class="btn btn-sm btn-outline-warning ms-1" 
+                                    title="Restaurer cette commande"
+                                    data-bs-toggle="tooltip">
+                                    <i class="fas fa-undo me-1"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-box-open fa-3x mb-3"></i>
+                                    <h5>Aucune commande trouvée</h5>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Total: {{ orders|length }} commande(s)</small>
+            </div> 
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{{ form_start(form, {'attr': {'id': 'sub_category_form'}}) }}
+    <div class="mb-3">
+        <label class="form-label fw-bold">Nom de la Sous-Catégorie</label>
+        {{ form_widget(form.name, {
+            'attr': {
+                'class': 'form-control',
+                'placeholder': 'Entrez le nom de la sous-catégorie'
+            }
+        }) }}
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label fw-bold">Catégorie parente</label>
+        {{ form_widget(form.category, {
+            'attr': {
+                'class': 'form-select'
+            }
+        }) }}
+    </div>
+{{ form_end(form) }}

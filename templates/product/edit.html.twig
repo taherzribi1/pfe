@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">
+        <i class="fa-solid fa-pen-to-square me-2"></i>Modifier un livre
+    </h1>
+ 
+{{ include('product/_form.html.twig') }}
+
+
+   
+</div>
+{% endblock %}

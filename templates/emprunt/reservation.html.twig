@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation - {{ product.name }}{% endblock %}
+
+{% block body %}
+
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h4 mb-0">Réservation du produit</h2>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-5 mb-4 mb-md-0">
+                                <img src="{{ asset('uploads/images/' ~ product.image) }}" 
+                                    alt="{{ product.name }}" 
+                                    class="img-fluid rounded">
+                            </div>
+                            
+                            <div class="col-md-7">
+                                <h3 class="h4">{{ product.name }}</h3>
+                                <p class="text-muted">{{ product.auteur }}</p>
+                                
+                                <hr>
+                                
+                          <div class="mb-4">
+                                <h4 class="h5">Informations de réservation</h4>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-boxes text-primary me-2"></i>
+                                        <strong>Stock disponible:</strong> {{ product.stock }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-calendar-check text-primary me-2"></i>
+                                        <strong>Date d'emprunt:</strong> {{ 'now'|date('d/m/Y') }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-calendar-times text-primary me-2"></i>
+                                        <strong>Date de retour:</strong> {{ 'now'|date_modify('+7 days')|date('d/m/Y') }}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-info-circle text-primary me-2"></i>
+                                        <strong>Durée:</strong> 7 jours
+                                    </li>
+                                </ul>
+                            </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Vous pourrez venir récupérer le produit dans notre librairie dès demain.
+                                </div>
+                                
+                                <form action="{{ path('app_emprunt_confirm', {'id': product.id}) }}" method="post">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('confirm-reservation') }}">
+                                    
+                                    <div class="mb-3">
+                                        <label for="confirmation" class="form-label">
+                                            <input type="checkbox" id="confirmation" name="confirmation" required class="form-check-input me-2">
+                                            Je confirme avoir pris connaissance des conditions de prêt
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="{{ path('app_home',{'id': product.id}) }}" 
+                                        class="btn btn-outline-secondary me-md-2">
+                                            <i class="fas fa-arrow-left me-2"></i> Annuler
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-check-circle me-2"></i> Confirmer la réservation
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .card {
+        border: none;
+        transition: transform 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .card-header {
+        border-radius: 0.375rem 0.375rem 0 0 !important;
+    }
+    .form-check-input {
+        position: relative;
+        margin-left: 0;
+    }
+</style>
+{% endblock %}

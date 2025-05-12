@@ -1,0 +1,287 @@
+{# templates/service/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre Écosystème Collaboratif - Libres Ensemble{% endblock %}
+
+{% block body %}
+<!-- Hero Section --><div class="service-hero bg-light py-6">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">Une Communauté Littéraire Engagée</h1>
+        <p class="lead mb-4">Redécouvrez le partage culturel à travers notre plateforme collaborative</p>
+        <div class="cta-buttons">
+            <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg mx-2">
+                <i class="fas fa-compass me-2"></i>Découvrir Notre Site
+            </a>
+            <a href="{{ path('app_register') }}" class="btn btn-outline-primary btn-lg mx-2">
+                <i class="fas fa-users me-2"></i>Intégrer le Réseau
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .service-card {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        height: 100%;
+        border-radius: 1rem;
+    }
+</style>
+
+<!-- Services Section -->
+<section class="py-6">
+    <div class="container">
+        <h2 class="text-center mb-5">Notre Plateforme Collaborative</h2>
+        <div class="row g-5">
+            <!-- Carte Échange -->
+            <div class="col-lg-4 d-flex">
+                <div class="service-card p-5 rounded-4 w-100">
+                    <div class="icon-wrapper bg-warning mb-4">
+                        <i class="fas fa-exchange-alt fa-3x text-white"></i>
+                    </div>
+                    <h3 class="mb-4">Système d'Échange Dynamique</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-sync-alt text-warning me-3"></i>
+                            <div>
+                                <h5>Rotation Intelligente</h5>
+                                <p>Optimisation algorithmique des circulations</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-map-marked-alt text-warning me-3"></i>
+                            <div>
+                                <h5>Réseau Géolocalisé</h5>
+                                <p>Connectez-vous avec des lecteurs proches</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Carte Engagement -->
+            <div class="col-lg-4 d-flex">
+                <div class="service-card p-5 rounded-4 w-100">
+                    <div class="icon-wrapper bg-danger mb-4">
+                        <i class="fas fa-handshake fa-3x text-white"></i>
+                    </div>
+                    <h3 class="mb-4">Engagement Communautaire</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-user-shield text-danger me-3"></i>
+                            <div>
+                                <h5>Certification Participative</h5>
+                                <p>Système de réputation collaborative</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-comments text-danger me-3"></i>
+                            <div>
+                                <h5>Espaces de Dialogue</h5>
+                                <p>Forums thématiques et clubs de lecture</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Carte Innovation -->
+            <div class="col-lg-4 d-flex">
+                <div class="service-card p-5 rounded-4 w-100">
+                    <div class="icon-wrapper bg-purple mb-4">
+                        <i class="fas fa-lightbulb fa-3x text-white"></i>
+                    </div>
+                    <h3 class="mb-4">Innovation Durable</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-leaf text-purple me-3"></i>
+                            <div>
+                                <h5>Calculateur d'Impact</h5>
+                                <p>Suivez votre contribution écologique</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-microchip text-purple me-3"></i>
+                            <div>
+                                <h5>Bibliothèque Virtuelle</h5>
+                                <p>Accès à des ressources numériques</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Section Fonctionnement Dynamique -->
+<section class="bg-light py-6">
+    <div class="container">
+        <h2 class="text-center mb-5">Fonctionnement du Partage</h2><br>
+        <div class="row g-4">
+            {% for fonctionnement in fonctionnements %}
+            <div class="col-md-4">
+                <div class="dynamic-card p-4 text-center h-100">
+                    <div class="icon-badge bg-{{ fonctionnement.color }} mb-3">
+                        <i class="{{ fonctionnement.icon }} fa-2x"></i>
+                    </div>
+                    <h4>{{ fonctionnement.title }}</h4>
+                    <p class="mb-0">{{ fonctionnement.description }}</p>
+                    {% if fonctionnement.badge %}
+                    <span class="badge bg-{{ fonctionnement.badge_color }} mt-2">{{ fonctionnement.badge }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<footer class="bg-dark text-white pt-5 pb-4">
+  <div class="container">
+    <div class="row gy-4">
+      <!-- Logo et description -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-book-open fa-2x text-primary me-2" aria-hidden="true"></i>
+          <span class="fs-4 fw-bold">Le Coin des Livres</span>
+        </div>
+        <p class="text-light opacity-85 mb-4">
+          Découvrez des milliers de livres dans tous les genres littéraires. Nous apportons la lecture à votre porte !
+        </p>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-primary btn-sm rounded-circle"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="btn btn-info btn-sm rounded-circle"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="btn btn-danger btn-sm rounded-circle"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="btn btn-success btn-sm rounded-circle"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+
+      <!-- Liens rapides -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Navigation</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a href="{{path('app_home')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-home text-primary me-2"></i> Accueil
+            </a>
+          </li>
+      
+          <li class="mb-2">
+            <a href="{{path('app_about')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-info-circle text-primary me-2"></i> À propos
+            </a>
+          </li>
+             <li class="mb-2">
+            <a href="{{path('app_services')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-hand-holding-heart text-primary me-2"></i> Services
+            </a>
+          </li>
+        </ul>
+      </div>
+
+     
+      <!-- Contact -->
+       <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Contactez-nous</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+            <span class="text-light opacity-85">Rue Afrane km 4.5, Sfax</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-phone-alt text-primary me-2"></i>
+            <span  class="text-light opacity-85">+216 55447998</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-envelope text-primary me-2"></i>
+            <span  class="text-light opacity-85">contact@lecoindeslivres.com</span>
+          </li>
+          <li>
+            <i class="fas fa-clock text-primary me-2"></i>
+            <span class="text-light opacity-85">Lun-Ven : 9h-18h</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr class="my-4 border-light opacity-25">
+
+    <!-- Section copyright -->
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        <p class="small mb-0 text-light opacity-85">&copy; 2025 Le Coin des Livres. Tous droits réservés.</p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="#" class="text-light text-decoration-none me-3 hover-primary">Confidentialité</a>
+        <a href="#" class="text-light text-decoration-none hover-primary">Conditions d'utilisation</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  footer a {
+    transition: all 0.3s ease;
+  }
+  
+  footer a:hover {
+    color: var(--bs-primary) !important;
+    text-decoration: underline !important;
+  }
+    .service-hero {
+        background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+                    url('/images/books-community.jpg') center/cover;
+        padding: 100px 0;
+    }
+
+    .service-card {
+        background:white;
+       border: 1px solid rgba(0, 0, 0, 0.1);
+        border-top: 3px solid #ffc107; /* Couleur correspondant à la carte */
+        transition: transform 0.3s ease;
+    }
+   
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dynamic-card {
+        background: white;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .dynamic-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .icon-badge {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        margin: 0 auto;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bg-purple { background-color: #6f42c1; }
+    .text-purple { color: #6f42c1; }
+</style>
+{% endblock %}

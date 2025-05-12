@@ -1,0 +1,29 @@
+<!-- Bouton pour ouvrir le modal -->
+<button type="button" class="btn btn-danger d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#deleteCityModal">
+    <i class="fa-solid fa-trash me-2"></i>Supprimer
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteCityModal" tabindex="-1" aria-labelledby="deleteCityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCityModalLabel">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Voulez-vous vraiment supprimer cette ville "{{ city.name }}"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <!-- Formulaire de suppression -->
+                <form method="post" action="{{ path('app_city_delete', {'id': city.id}) }}" class="d-inline-block mb-0">
+                    <!-- Jeton CSRF -->
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ city.id) }}">
+                    <!-- Bouton confirmer -->
+                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

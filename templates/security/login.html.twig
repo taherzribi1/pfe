@@ -1,0 +1,291 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion | {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <div class="background-animation">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="login-wrapper animate__animated animate__fadeIn">
+        <div class="login-card">
+          
+            <h1 class="login-title">Bienvenue</h1>
+            <p class="text-muted mb-4">Connectez-vous pour accéder à votre espace</p>
+            
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            
+            {% if app.user %}
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="bi bi-person-check me-2"></i>
+                    <div>
+                        Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>
+                        <a href="{{ path('app_logout') }}" class="alert-link ms-2">Déconnexion</a>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <form method="post" class="login-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                
+               <div class="form-floating mb-3">
+    <input type="email" 
+           class="form-control" 
+           id="inputEmail" 
+           name="email" 
+           value="{{ last_username }}" 
+           placeholder="name@example.com" 
+           required 
+           autofocus>
+    <label for="inputEmail">
+        <i class="fa-solid fa-envelope"></i> <!-- Icône ajoutée ici -->
+        Email
+    </label>
+   
+</div>
+                
+                <div class="form-floating mb-3">
+    <input type="password" 
+           class="form-control" 
+           id="inputPassword" 
+           name="password" 
+           placeholder="Mot de passe" 
+           required>
+    <label for="inputPassword">
+        <i class="fa-solid fa-lock me-2"></i> <!-- Icône ajoutée ici -->
+        Mot de passe
+    </label>
+    
+    <button type="button" class="password-toggle" aria-label="Afficher le mot de passe">
+        
+    </button>
+</div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe" name="_remember_me">
+                        <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                    </div>
+                    <a href="" class="forgot-password">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg w-100 login-btn">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    <span class="btn-text">Se connecter</span>
+                </button>
+                
+               <div class="separator my-4">ou</div>
+
+<div class="social-login">
+    <button type="button" class="btn btn-outline-primary btn-sm">
+        <i class="fa-brands fa-google me-2"></i> <!-- Icône Google Font Awesome -->
+        Google
+    </button>
+    <button type="button" class="btn btn-outline-primary btn-sm">
+        <i class="fa-brands fa-facebook-f me-2"></i> <!-- Icône Facebook Font Awesome -->
+        Facebook
+    </button>
+</div>
+                
+                <div class="text-center mt-4">
+                    <p>Pas encore de compte ? <a href="{{ path('app_register') }}" class="register-link">S'inscrire</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --dark-color: #1e1e24;
+        --light-color: #f8f9fa;
+    }
+    
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        background-color: #f5f7ff;
+        padding: 20px;
+    }
+    
+    .background-animation {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+    
+    .background-animation .shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(63, 55, 201, 0.1) 100%);
+    }
+    
+    .background-animation .shape:nth-child(1) {
+        width: 400px;
+        height: 400px;
+        top: -100px;
+        left: -100px;
+    }
+    
+    .background-animation .shape:nth-child(2) {
+        width: 300px;
+        height: 300px;
+        bottom: -50px;
+        right: -50px;
+    }
+    
+    .login-wrapper {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 420px;
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        transition: all 0.3s ease;
+        width: 150%;
+    }
+    
+    .login-form .form-control {
+        width: 100%;
+        padding-left: 45px;
+    }
+    
+    .login-card:hover {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+    
+    .brand-logo {
+        text-align: center;
+    }
+    
+    .brand-logo img {
+        max-height: 50px;
+    }
+    
+    .login-title {
+        font-weight: 700;
+        color: var(--dark-color);
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-floating {
+        position: relative;
+    }
+    
+    .form-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #6c757d;
+        z-index: 5;
+    }
+    
+    .form-floating label {
+        padding-left: 45px;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        z-index: 5;
+    }
+    
+    .login-btn {
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #6c757d;
+    }
+    
+    .separator::before,
+    .separator::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .separator::before {
+        margin-right: 1rem;
+    }
+    
+    .separator::after {
+        margin-left: 1rem;
+    }
+    
+    .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .forgot-password {
+        font-size: 0.875rem;
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .forgot-password:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+    
+    .register-link {
+        font-weight: 600;
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .register-link:hover {
+        color: var(--secondary-color);
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

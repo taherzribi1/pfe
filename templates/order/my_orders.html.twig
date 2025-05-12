@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="card shadow-lg overflow-hidden">
+                    <!-- En-tête amélioré avec gradient -->
+                    <div class="card-header bg-primary-gradient border-0 py-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h1 class="h3 mb-0 text-white">
+                                <i class="fa-solid fa-box-open me-2"></i>Mes Commandes
+                            </h1>
+                            <span class="badge bg-white text-primary rounded-pill fs-6">
+                                {{ orders|length }} commande(s)
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if orders|length > 0 %}
+                        <!-- Tableau redessiné -->
+                            <div class="card-body p-0">
+                              <div class="table-responsive">
+                               <table class="table table-hover align-middle mb-0">
+                                <thead class="table-primary text-white">
+                                        <tr>
+                                            <th class="ps-4 py-3" style="min-width: 120px;">Référence</th>
+                                            <th class="py-3" style="min-width: 160px;">Date</th>
+                                            <th class="py-3">Montant</th>
+                                            <th class="pe-4 py-3" style="min-width: 140px;">Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in orders %}
+                                            <tr class="hover-lift">
+                                                <td class="ps-4 fw-semibold">
+                                                    #{{ order.id }}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <!-- Modification du fuseau horaire -->
+                                                        <span class="text-dark" data-timestamp="{{ order.createAt.timestamp }}">
+                                                            {{ order.createAt|date('d M Y H:i', 'Africa/Tunis') }}
+                                                        </span>
+                                                     
+                                                    </div>
+                                                </td>
+                                                <td class="fw-bold text-primary">
+                                                    {{ order.totalPrice|number_format(2, ',', ' ') }} TND
+                                                </td>
+                                                <td class="pe-4">
+                                                    {% if order.isCompleted %}
+                                                        <span class="badge rounded-pill bg-success bg-opacity-10 text-success">
+                                                           <i class="fa-solid fa-check-circle me-1"></i> Terminée
+                                                        </span>
+                                                    {% else %}
+                                                    <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning">
+                                                            <i class="fa-solid fa-spinner fa-pulse me-2"></i>En cours
+                                                    </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Pied de tableau modifié -->
+                        <div class="card-footer bg-light border-top-0 pt-3 pb-4">
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ path('app_home') }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-plus me-2"></i>Nouvelle Commande
+                                </a>
+                            </div>
+                        </div>
+
+                    {% else %}
+                        <!-- État vide redessiné -->
+                        <div class="card-body py-5">
+                            <div class="empty-state text-center">
+                                <div class="empty-state-icon bg-soft-primary">
+                                    <i class="fa-solid fa-box-open fa-2x text-primary"></i>
+                                </div>
+                                <h3 class="mt-4">Aucune commande trouvée</h3>
+                                <p class="text-muted mb-4">Commencez votre première commande dès maintenant</p>
+                                <a href="{{ path('app_home') }}" class="btn btn-primary px-5">
+                                    <i class="fa-solid fa-cart-plus me-2"></i>Passer commande
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Script pour l'actualisation en temps réel #}
+    <script>
+        function updateLocalTimes() {
+            document.querySelectorAll('[data-timestamp]').forEach(element => {
+                const timestamp = parseInt(element.dataset.timestamp) * 1000;
+                const date = new Date(timestamp);
+                
+                // Options pour l'affichage en français
+                const options = {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'Africa/Tunis'
+                };
+                
+                element.innerHTML = new Intl.DateTimeFormat('fr-FR', options).format(date);
+            });
+        }
+
+        // Actualiser toutes les 30 secondes
+        setInterval(updateLocalTimes, 30000);
+        updateLocalTimes(); // Initialisation
+    </script>
+
+    <style>
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #2c7be5 0%, #1c5fb8 100%);
+        }
+        
+        .hover-lift {
+            transition: all 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            background-color: #f8f9fa;
+        }
+        
+        .empty-state {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .table-dark th {
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .fa-pulse {
+            animation: fa-spin 1s infinite steps(8);
+        }
+        
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: 1px solid #dee2e6;
+                border-radius: 0.5rem;
+            }
+        }
+    </style>
+{% endblock %}

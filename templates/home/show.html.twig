@@ -1,0 +1,269 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+  <div class="card shadow-lg">
+    <div class="row g-0">
+      <!-- Image Section -->
+      <div class="col-md-5">
+        <div class="p-4 d-flex justify-content-center align-items-center h-100">
+          <img src="{{ asset('uploads/images/' ~ product.image) }}" 
+               class="img-fluid rounded-3" 
+               alt="{{ product.name }}"
+               style="max-height: 500px; object-fit: contain;">
+        </div>
+      </div>
+      
+      <!-- Details Section -->
+      <div class="col-md-7">
+        <div class="card-body p-4">
+          <!-- Product Title -->
+          <h1 class="card-title mb-3">{{ product.name }}</h1>
+          
+          <!-- Author -->
+          <div class="d-flex align-items-center mb-3">
+            <span class="badge bg-light text-dark fs-6 me-3">Auteur</span>
+            <h4 class="mb-0 text-muted">{{ product.auteur }}</h4>
+          </div>
+          <div class="isbn-info mb-3 d-flex align-items-center gap-2">
+              <span class="badge bg-light text-dark fs-sm">
+               
+                N'ISBN: {{ product.ISBN }}
+              </span>
+            </div>
+          
+          <!-- Availability -->
+          <div class="mb-4">
+            {% if product.stock > 0 %}
+              <span class="badge bg-success fs-6 p-2">
+                    <i class="bi bi-check-circle-fill me-2"></i>En Stock 
+                </span>
+              
+            {% else %}
+                <span class="badge bg-danger fs-6 p-2">
+                    <i class="bi bi-x-circle-fill me-2"></i>Rupture de stock
+                </span>
+                {% if nextReturnDate is defined and nextReturnDate %}
+                    <div class="mt-2 alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Prochaine disponibilité prévue le {{ nextReturnDate|date('d/m/Y') }}
+                    </div>
+                {% endif %}
+            {% endif %}
+          </div>
+          
+          <!-- Price -->
+          {% if product.getTypeProduit() == 'à vendre' %}
+          <div class="mb-4">
+            <h2 class="text-primary">{{ product.price }} TND</h2>
+          </div>
+          {% endif %}
+          
+          <!-- Action Buttons -->
+          <div class="d-flex mb-4">
+              {% if product.getTypeProduit() == 'à vendre' %}
+                  {% if product.stock > 0 %}
+                      <a href="{{ path('app_cart_new', {'id': product.id}) }}" 
+                        class="btn btn-primary btn-lg me-3 px-4 py-2">
+                          <i class="bi bi-cart-plus me-2"></i>Ajouter au panier
+                      </a>
+                  {% else %}
+                      <button class="btn btn-secondary btn-lg me-3 px-4 py-2" disabled>
+                          <i class="bi bi-cart-x me-2"></i>Indisponible
+                      </button>
+                  {% endif %}
+              
+              {% elseif product.getTypeProduit() == 'à emprunter' %}
+                  {% if product.stock > 0 %}
+                      {% if hasActiveEmprunt is defined and hasActiveEmprunt %}
+                          <button class="btn btn-warning btn-lg me-3 px-4 py-2" disabled>
+                              <i class="bi bi-exclamation-triangle me-2"></i>Déjà emprunté
+                          </button>
+                          <a href="{{ path('app_mes_reservations') }}" 
+                             class="btn btn-outline-primary btn-lg px-4 py-2">
+                              <i class="bi bi-collection me-2"></i>Voir mes emprunts
+                          </a>
+                      {% else %}
+                          <a href="{{ path('app_emprunt_reservation', {'id': product.id}) }}" 
+                            class="btn btn-primary btn-lg me-3 px-4 py-2">
+                              <i class="bi bi-calendar-check me-2"></i>Réserver
+                          </a>
+                      {% endif %}
+                  {% else %}
+                      <button class="btn btn-secondary btn-lg me-3 px-4 py-2" disabled>
+                          <i class="bi bi-bookmark-x me-2"></i>Indisponible
+                      </button>
+                  {% endif %}
+              {% endif %}
+          </div>
+          
+          <!-- Description -->
+          <div class="border-top pt-4">
+            <h4 class="mb-3">Description</h4>
+            <p class="card-text fs-5">{{ product.descreption }}</p>
+          </div>
+          
+          <!-- Additional Info -->
+          <div class="mt-4 pt-3 border-top">
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-1"><i class="bi bi-truck me-2"></i> Livraison rapide</p>
+                <p class="mb-1"><i class="bi bi-arrow-return-left me-2"></i> Retours faciles</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-1"><i class="bi bi-shield-check me-2"></i> Paiement sécurisé</p>
+                <p class="mb-1"><i class="bi bi-headset me-2"></i> Support 24/7</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-dark text-white pt-5 pb-4">
+  <div class="container">
+    <div class="row gy-4">
+      <!-- Logo et description -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-book-open fa-2x text-primary me-2" aria-hidden="true"></i>
+          <span class="fs-4 fw-bold">Le Coin des Livres</span>
+        </div>
+        <p class="text-light opacity-85 mb-4">
+          Découvrez des milliers de livres dans tous les genres littéraires. Nous apportons la lecture à votre porte !
+        </p>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-primary btn-sm rounded-circle"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="btn btn-info btn-sm rounded-circle"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="btn btn-danger btn-sm rounded-circle"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="btn btn-success btn-sm rounded-circle"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+
+      <!-- Liens rapides -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Navigation</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a href="{{path('app_home')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-home text-primary me-2"></i> Accueil
+            </a>
+          </li>
+         
+          <li class="mb-2">
+            <a href="{{path('app_about')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-info-circle text-primary me-2"></i> À propos
+            </a>
+          </li>
+
+           <li class="mb-2">
+            <a href="{{path('app_services')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-hand-holding-heart text-primary me-2"></i> Services
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+     
+      <!-- Contact -->
+       <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Contactez-nous</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+            <span class="text-light opacity-85">Rue Afrane km 4.5, Sfax</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-phone-alt text-primary me-2"></i>
+            <span  class="text-light opacity-85">+216 55447998</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-envelope text-primary me-2"></i>
+            <span  class="text-light opacity-85">contact@lecoindeslivres.com</span>
+          </li>
+          <li>
+            <i class="fas fa-clock text-primary me-2"></i>
+            <span class="text-light opacity-85">Lun-Ven : 9h-18h</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr class="my-4 border-light opacity-25">
+
+    <!-- Section copyright -->
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        <p class="small mb-0 text-light opacity-85">&copy; 2025 Le Coin des Livres. Tous droits réservés.</p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="#" class="text-light text-decoration-none me-3 hover-primary">Confidentialité</a>
+        <a href="#" class="text-light text-decoration-none hover-primary">Conditions d'utilisation</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer a {
+    transition: all 0.3s ease;
+  }
+  
+  footer a:hover {
+    color: var(--bs-primary) !important;
+    text-decoration: underline !important;
+  }
+  
+
+  .card {
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  .card-img-container {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .btn-primary {
+    background-color: #6c5ce7;
+    border-color: #6c5ce7;
+    transition: all 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color:rgb(116, 103, 210);
+    transform: translateY(-2px);
+  }
+  
+  .quantity-selector {
+    width: 120px;
+  }
+  
+  
+  
+  .social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .social-icons a:hover {
+    background-color: rgba(255,255,255,0.2);
+    text-decoration: none !important;
+  }
+</style>
+{% endblock %}

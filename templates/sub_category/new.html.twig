@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Sous categorie {% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">
+        <i class="fa-solid fa-plus-circle me-2"></i>Créer une Nouvelle Sous-Catégorie
+    </h1>
+<div class="card shadow-lg">
+        <div class="card-body">
+            {{ include('sub_category/_form.html.twig') }}
+<div class="d-flex gap-3 align-items-center mt-4">
+                <button type="submit" form="sub_category_form" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk me-2"></i>Enregistrer
+                </button>
+                    <a href="{{ path('app_sub_category_index') }}" class="btn btn-outline-danger d-flex align-items-center">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </a>
+</div>
+</div>
+</div>
+
+{% endblock %}

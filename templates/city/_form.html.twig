@@ -1,0 +1,22 @@
+{{ form_start(form, {'attr': {'id': 'city_form'}}) }}
+    <div class="mb-3">
+        <label class="form-label fw-bold">Nom de la Ville</label>
+        {{ form_widget(form.name, {
+            'attr': {
+                'class': 'form-control',
+                'placeholder': 'Entrez le nom de la sous-catégorie'
+            }
+        }) }}
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label fw-bold">Frais de livraison</label>
+        {{ form_widget(form.shippingCost, {
+            'attr': {
+                'class': 'form-control',
+                 'placeholder': 'Entrez le prix de Frais du livraison'
+            }
+        }) }}
+    </div>
+{{ form_end(form) }}
+

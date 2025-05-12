@@ -1,0 +1,181 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes{% endblock %}
+
+{% block body %}
+<div class="container py-3">
+    <div class="row">
+        <!-- Colonne gauche (formulaire) -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">Informations de livraison</h2>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form_widget(form.firstName, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Votre nom',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <label for="{{ form.firstName.vars.id }}">Votre Nom</label>
+                               
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form_widget(form.lastName, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Votre prénom',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <label for="{{ form.lastName.vars.id }}">Votre Prénom</label>
+                            
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-floating">
+                                {{ form_widget(form.adresse, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Votre adresse',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <label for="{{ form.adresse.vars.id }}">Votre Adresse</label>
+                                <div class="invalid-feedback">
+                                    Veuillez entrer votre adresse.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-floating">
+                                {{ form_widget(form.city, {
+                                    'attr': {
+                                         'class': 'form-select form-select-sm',
+                                        'required': 'required'
+                                    }
+                                }) }}
+                                <label for="{{ form.city.vars.id }}">Votre Ville</label>
+                                <div class="invalid-feedback">
+                                    Veuillez sélectionner votre ville.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+    <div class="form-floating">
+        {{ form_widget(form.phone, {
+            'attr': {
+                'class': 'form-control',
+                'placeholder': 'Téléphone',
+                'required': 'required',
+                'inputmode': 'numeric',
+                'pattern': '[0-9]{8}',
+                'title': 'Entrez 8 chiffres sans espaces'
+            }
+        }) }}
+        <label for="{{ form.phone.vars.id }}">Téléphone</label>
+        <div class="invalid-feedback">
+            Veuillez entrer un numéro de téléphone valide.
+        </div>
+    </div>
+</div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">
+                        <i class="bi bi-check-circle me-2"></i>Paiement
+                    </button>
+                    
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Colonne droite (récapitulatif) -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h2 class="h4 mb-0">Récapitulatif</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Montant des articles :</span>
+                        <strong><span id="card-price">{{ total }}</span> TND</strong>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Frais de livraison :</span>
+                        <strong><span id="shippingCost">7</span> TND</strong>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="h5">Total à payer :</span>
+                        <strong class="h5"><span class="total-price">{{ total + 7 }}</span> TND</strong>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Les frais de livraison peuvent varier selon la ville de destination.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Fermeture de la row -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function(){
+    const citySelctor = $('#order_city'); 
+    const cityValue = citySelctor.val();
+    const url = `http://127.0.0.1:8000/city/${cityValue}/shipping/cost`; 
+
+    function ajaxRequest(url){
+        $.ajax({
+            url: url, 
+            type: 'GET', 
+            success: function(response){
+                const newResponse = JSON.parse(response);
+                if (parseInt(newResponse.status) == 200){
+                    $("#shippingCost").text(newResponse.content);
+                    
+                    const cardPrice = parseInt($("#card-price").text()); 
+                    const shippingCost = parseInt($('#shippingCost').text());
+                    
+                    $('.total-price').text(cardPrice + shippingCost);
+                    
+                    // Animation pour montrer le changement
+                    $('.total-price').fadeOut(100).fadeIn(100);
+                }
+            }, 
+            error: function(xhr, status, error){
+                console.error("Erreur lors de la récupération des frais de livraison");
+            }
+        });
+    }
+
+    ajaxRequest(url);
+    citySelctor.on('change', function(){
+        const urlUpdate = `http://127.0.0.1:8000/city/${$(this).val()}/shipping/cost`;
+        ajaxRequest(urlUpdate);
+    });
+});
+</script>
+{% endblock %}

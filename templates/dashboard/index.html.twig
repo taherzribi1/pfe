@@ -1,0 +1,307 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Tableau de Bord</h1>
+
+    <div class="dashboard-stats">
+        <div class="stat-card stat-users">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Utilisateurs</h3>
+                <p class="stat-value">{{ userCount }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-products">
+            <div class="stat-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Produits</h3>
+                <p class="stat-value">{{ productCount }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-orders">
+            <div class="stat-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Commandes</h3>
+                <p class="stat-value">{{ orderCount }}</p>
+            </div>
+        </div>
+        <div class="stat-card stat-emprunt">
+            <div class="stat-icon">
+                <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Réservations</h3>
+                <p class="stat-value">{{ empruntCount }}</p>
+            </div>
+        </div>
+    </div>
+
+ {# Dans dashboard/index.html.twig #}
+<div class="stat-card stat-revenue">
+    <div class="stat-icon">
+        <i class="fas fa-money-bill-wave"></i>
+    </div>
+    <div class="stat-content">
+        <h3> Revenu Total</h3>
+        <p class="stat-value">{{ totalRevenue|number_format(2, ',', ' ') }} TD</p>
+    </div>
+</div>
+    
+    <div class="dashboard-section container">
+        <h2 class="section-title">
+            <i class="fas fa-money-bill-wave"></i> Revenu Mensuel
+        </h2>
+        <div class="chart-container">
+            <canvas id="monthlyRevenueChart"></canvas>
+        </div>
+    </div>
+    <div class="dashboard-section container">
+        <h2 class="section-title">
+            <i class="fas fa-chart-line"></i> Produits les plus vendus
+        </h2>
+        <div class="chart-container">
+            <canvas id="mostPurchasedProductsChart"></canvas>
+        </div>
+    </div>
+
+    {# Vous pouvez ajouter d'autres sections ici #}
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-title {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-right: 1.5rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.stat-users .stat-icon {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.stat-products .stat-icon {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.stat-orders .stat-icon {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+.stat-emprunt .stat-icon {
+    background: linear-gradient(135deg,rgb(231, 220, 60),rgb(228, 118, 106));
+}
+
+.stat-content h3 {
+    margin: 0 0 0.5rem 0;
+    color: #7f8c8d;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.dashboard-section {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    color: #2c3e50;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin-top: 1.5rem;
+}
+
+  .stat-revenue .stat-icon {
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    }
+
+@media (max-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-container {
+        height: 300px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('mostPurchasedProductsChart').getContext('2d');
+        const mostPurchasedProductsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ productNames|json_encode|raw }},
+                datasets: [{
+                    label: 'Quantité vendue',
+                    data: {{ productQuantities|json_encode|raw }},
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.7)',
+                        'rgba(46, 204, 113, 0.7)',
+                        'rgba(155, 89, 182, 0.7)',
+                        'rgba(241, 196, 15, 0.7)',
+                        'rgba(230, 126, 34, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(46, 204, 113, 1)',
+                        'rgba(155, 89, 182, 1)',
+                        'rgba(241, 196, 15, 1)',
+                        'rgba(230, 126, 34, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+
+             // Graphique des revenus mensuels
+        const revenueCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
+        const monthlyRevenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: {{ months|json_encode|raw }},
+                datasets: [{
+                    label: 'Revenu (TD)',
+                    data: {{ revenues|json_encode|raw }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw.toFixed(2) + ' TD';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' TD';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+</script>
+{% endblock %}

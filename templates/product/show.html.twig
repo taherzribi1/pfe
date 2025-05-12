@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <h1 class="mb-4"><i class="fas fa-box"></i> Produit</h1>
+
+    <table class="table table-bordered table-sm">
+        <thead class="thead-light">
+            <tr>
+                <th> Id</th>
+                <th> Image</th>
+                <th> Nom</th>
+                <th> Auteur</th>
+                <th> Description</th>
+                <th> Prix</th>
+                <th> ISBN</th>  {# New ISBN header #}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ product.id }}</td>
+                <td><img src="{{ asset('uploads/images/' ~ product.image) }}" class="img-thumbnail" style="width: 50px;"></td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.auteur }}</td>
+                <td>{{ product.descreption }}</td>
+                <td>{{ product.price | number_format(2, '.', ',') }} TND</td>
+                <td>{{ product.isbn }}</td>  {# New ISBN data cell #}
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-4 d-flex gap-2">
+        <a class="btn btn-primary btn-lg rounded-pill shadow-sm px-4" href="{{ path('app_product_edit', {'id': product.id}) }}">
+            <i class="fas fa-edit"></i> Modifier
+        </a>
+        {{ include('product/_delete_form.html.twig') }}
+        <a class="btn btn-outline-secondary btn-lg rounded-pill shadow-sm px-4" href="{{ path('app_product_index') }}">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}

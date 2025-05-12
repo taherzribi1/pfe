@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Villes{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="fa-solid fa-city me-2"></i>Les Villes</h1>
+
+    <div class="card shadow-sm">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="bg-light text-dark py-3"><i class="bi bi-key me-2"></i>ID</th>
+                    <th class="bg-light text-dark py-3"><i class="bi bi-tag me-2"></i>Nom</th>
+                    <th class="bg-light text-dark py-3"><i class="bi bi-tag me-2"></i>Frais de livraison</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-muted">{{ city.id }}</td>
+                    <td class="text-primary">{{ city.name }}</td>
+                    <td class="text-primary">{{ city.shippingCost }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <a href="{{ path('app_city_edit', {'id': city.id}) }}" class="btn btn-primary btn-lg rounded-pill shadow-sm px-4">
+            <i class="bi bi-pencil-square me-2"></i>Modifier
+        </a>
+        <!-- Bouton pour ouvrir le modal -->
+        <button type="button" class="btn btn-danger btn-lg rounded-pill shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#deleteCityModal">
+            <i class="bi bi-trash3 me-2"></i>Supprimer
+        </button>
+        <a href="{{ path('app_city_index') }}" class="btn btn-outline-secondary btn-lg rounded-pill shadow-sm px-4">
+            <i class="bi bi-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteCityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer cette ville "{{ city.name }}"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <!-- Formulaire de suppression -->
+                <form method="post" action="{{ path('app_city_delete', {'id': city.id}) }}" class="mb-0">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ city.id) }}">
+                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

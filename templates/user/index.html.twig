@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    {% include "layouts/flash_msg.html.twig" %}
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h4 mb-0"><i class="fas fa-users me-2"></i>Gestion des utilisateurs</h1>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-nowrap">#ID</th>
+                            <th>Email</th>
+                            <th>Prénom</th>
+                            <th>Nom</th>
+                            <th>Rôle</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td class="fw-bold">{{ user.id }}</td>
+                                <td class="text-break">{{ user.email }}</td>
+                                <td>{{ user.firstname }}</td>
+                                <td>{{ user.lastname }}</td>
+                                <td>
+                                    {% if 'ROLE_ADMIN' in user.roles %}
+                                        <span class="badge bg-primary rounded-pill">
+                                            <i class="fas fa-shield-alt me-1"></i>Administrateur
+                                        </span>
+                                    {% elseif 'ROLE_EDITOR' in user.roles %}
+                                        <span class="badge bg-success rounded-pill">
+                                            <i class="fas fa-pen-alt me-1"></i>Éditeur
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill">
+                                            <i class="fas fa-user me-1"></i>Client
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    {% if 'ROLE_ADMIN' not in user.roles %}
+                                        <div class="d-inline-flex gap-2">
+                                            {% if 'ROLE_EDITOR' not in user.roles %}
+                                                <!-- Bouton pour attribuer le rôle éditeur -->
+                                                <a class="btn btn-sm btn-outline-success" 
+                                                   data-bs-toggle="modal" 
+                                                   data-bs-target="#assignEditorModal{{ user.id }}">
+                                                    <i class="fas fa-plus-circle me-1"></i>Éditeur
+                                                </a>
+
+                                                <!-- Modal pour l'attribution du rôle éditeur -->
+                                                <div class="modal fade" id="assignEditorModal{{ user.id }}" tabindex="-1" aria-labelledby="assignEditorModalLabel{{ user.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="assignEditorModalLabel{{ user.id }}">Confirmer l'attribution</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Êtes-vous sûr de vouloir attribuer le rôle <strong>éditeur</strong> à l'utilisateur <strong>{{ user.firstname }} {{ user.lastname }}</strong> ?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                                <a href="{{ path('app_user_to_editor', {'id': user.id}) }}" class="btn btn-success">Confirmer</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <!-- Bouton pour retirer le rôle éditeur -->
+                                                <a class="btn btn-sm btn-outline-warning" 
+                                                   data-bs-toggle="modal" 
+                                                   data-bs-target="#removeEditorModal{{ user.id }}">
+                                                    <i class="fas fa-minus-circle me-1"></i>Éditeur
+                                                </a>
+
+                                                <!-- Modal pour le retrait du rôle éditeur -->
+                                                <div class="modal fade" id="removeEditorModal{{ user.id }}" tabindex="-1" aria-labelledby="removeEditorModalLabel{{ user.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="removeEditorModalLabel{{ user.id }}">Confirmer le retrait</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Êtes-vous sûr de vouloir retirer le rôle <strong>éditeur</strong> à l'utilisateur <strong>{{ user.firstname }} {{ user.lastname }}</strong> ?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                                <a href="{{ path('app_user_remove_editor_role', {'id': user.id}) }}" class="btn btn-warning">Confirmer</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    .badge {
+        padding: 0.5em 0.75em;
+        font-size: 0.9em;
+    }
+</style>
+{% endblock %}

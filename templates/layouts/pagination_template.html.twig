@@ -1,0 +1,68 @@
+<nav aria-label="..." class="pagination-custom">
+    <ul class="pagination">
+        {% if previous is defined %}
+            <li class="page-item">
+                <a class="page-link" href="{{path(route,query|merge({(pageParameterName):previous}))}}" 
+                   style="color: #495057; background-color: #f8f9fa; border-color: #dee2e6;">
+                    Previous
+                </a>
+            </li>
+        {% endif %}
+        
+        {% for page in pagesInRange %} 
+            {% if page != current %}
+            <li class="page-item">
+                <a class="page-link" 
+                   href="{{path(route,query|merge({(pageParameterName):page}))}}"
+                   style="color: #6c757d; background-color: white; border: 1px solid #dee2e6; border-radius: 50%; margin: 0 3px;">
+                    {{page}}
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" 
+                   style="border-radius: 50%; background-color: #007bff; border: none; color: white; margin: 0 3px;">
+                    {{page}}
+                </a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if next is defined %}
+        <li class="page-item">
+            <a class="page-link" href="{{path(route,query|merge({(pageParameterName):next}))}}"
+               style="color: #495057; background-color: #f8f9fa; border-color: #dee2e6;">
+                Next
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+<style>
+    /* Custom Pagination */
+    .pagination-custom .page-link {
+        color: #6c757d;
+        background-color: white;
+        border: 1px solid #dee2e6;
+        margin: 0 3px;
+    }
+    
+    .pagination-custom .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+    
+    .pagination-custom .page-link:hover {
+        background-color: #e9ecef;
+    }
+    
+    .pagination-custom .page-item:first-child .page-link,
+    .pagination-custom .page-item:last-child .page-link {
+        border-radius: 4px;
+    }
+    
+    .pagination-custom .page-item:not(:first-child):not(:last-child) .page-link {
+        border-radius: 50%;
+    }
+</style>

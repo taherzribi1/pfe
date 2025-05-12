@@ -1,0 +1,312 @@
+  <div class="card shadow-lg">
+        <div class="card-body">
+<div class="card-body p-5">
+    {{ form_start(form, {'attr': {'class': 'form-product', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+
+    {# En-tête du formulaire #}
+    <div class="text-start mb-5">
+        <h2 class="h3 fw-bold text-primary mb-2">
+            <i class="bi bi-book me-2"></i>{{ app.request.attributes.get('_route') == 'app_product_edit' ? 'Modification' : 'Nouveau Livre' }}
+        </h2>
+        <p class="text-muted mb-0">Remplissez les informations essentielles de votre livre</p>
+    </div>
+
+    {# Section Principale #}
+    <div class="row g-4 mb-4">
+        {# Nom du Livre #}
+        <div class="col-md-6">
+            <div class="form-floating">
+                {{ form_widget(form.name, {
+                    'attr': {
+                        'class': 'form-control form-control-lg' ~ (form.name.vars.errors|length ? ' is-invalid' : ''),
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.name, null, {'label': 'Titre du Livre'}) }}
+                <div class="invalid-feedback fs-sm">
+                    {{ form_errors(form.name)|striptags }}
+                </div>
+            </div>
+        </div>
+
+        {# Auteur #}
+        <div class="col-md-6">
+            <div class="form-floating">
+                {{ form_widget(form.auteur, {
+                    'attr': {
+                        'class': 'form-control form-control-lg' ~ (form.auteur.vars.errors|length ? ' is-invalid' : ''),
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.auteur, null, {'label': 'Auteur'}) }}
+                <div class="invalid-feedback fs-sm">
+                    {{ form_errors(form.auteur)|striptags }}
+                </div>
+            </div>
+        </div>
+
+        {# Description #}
+        <div class="col-12">
+            <div class="form-floating">
+                {{ form_widget(form.descreption, {
+                    'attr': {
+                        'class': 'form-control form-control-lg' ~ (form.descreption.vars.errors|length ? ' is-invalid' : ''),
+                        'style': 'height: 120px',
+                        'placeholder': ' '
+                    }
+                }) }}
+                {{ form_label(form.descreption, null, {'label': 'Description'}) }}
+                <div class="invalid-feedback fs-sm">
+                    {{ form_errors(form.descreption)|striptags }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Section Détails #}
+    <div class="bg-light rounded-3 p-4 mb-5">
+        <h3 class="h5 fw-bold text-secondary mb-4">
+            <i class="bi bi-tag me-2"></i>Détails du produit
+        </h3>
+
+        <div class="row g-4">
+            {# Prix #}
+            <div class="col-md-6">
+                <div class="form-floating">
+                    {{ form_widget(form.price, {
+                        'attr': {
+                            'class': 'form-control form-control-lg' ~ (form.price.vars.errors|length ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {{ form_label(form.price, null, {'label': 'Prix'}) }}
+                    <div class="invalid-feedback fs-sm">
+                        {{ form_errors(form.price)|striptags }}
+                    </div>
+                </div>
+            </div>
+
+            {# ISBN #}
+            <div class="col-md-6">
+                <div class="form-floating">
+                    {{ form_widget(form.ISBN, {
+                        'attr': {
+                            'class': 'form-control form-control-lg' ~ (form.ISBN.vars.errors|length ? ' is-invalid' : ''),
+                            'placeholder': ' '
+                        }
+                    }) }}
+                    {{ form_label(form.ISBN, null, {'label': 'ISBN'}) }}
+                    <div class="invalid-feedback fs-sm">
+                        {{ form_errors(form.ISBN)|striptags }}
+                    </div>
+                </div>
+            </div>
+
+            {# Stock #}
+            <div class="col-md-6">
+                <div class="form-floating">
+                    {{ form_widget(form.stock, {
+                        'attr': {
+                            'class': 'form-control form-control-sm' ~ (form.stock.vars.errors|length ? ' is-invalid' : ''),
+                        }
+                    }) }}
+                    {{ form_label(form.stock, null, {'label': 'Quantité en stock'}) }}
+                    <div class="invalid-feedback fs-sm">
+                        {{ form_errors(form.stock)|striptags }}
+                    </div>
+                </div>
+            </div>
+
+            {# Sous-Catégorie #}
+            <div class="col-md-6">
+                <div class="form-floating">
+                    {{ form_widget(form.subCategories, {
+                        'attr': {
+                            'class': 'form-select form-select-sm',
+                        }
+                    }) }}
+                    {{ form_label(form.subCategories, null, {'label': 'Sous-catégorie'}) }}
+                    <div class="invalid-feedback fs-sm">
+                        {{ form_errors(form.subCategories)|striptags }}
+                    </div>
+                </div>
+            </div>
+
+            {# Type de Produit #}
+            <div class="col-md-6">
+                <div class="form-floating">
+                    {{ form_widget(form.type_produit, {
+                        'attr': {
+                            'class':  'form-select form-select-sm' ~ (form.type_produit.vars.errors|length ? ' is-invalid' : '')
+                        }
+                    }) }}
+                    {{ form_label(form.type_produit, null, {'label': 'Type de livre'}) }}
+                    <div class="invalid-feedback fs-sm">
+                        {{ form_errors(form.type_produit)|striptags }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    {# Section Image #}
+    <div class="mb-5">
+        <h3 class="h5 fw-bold text-secondary mb-4">
+            <i class="bi bi-image me-2"></i>Visuel du livre
+        </h3>
+        
+        <div class="card border border-dark">
+             <div class="card-body p-4 text-center">
+                {% if product.image %}
+                    <div class="mb-4 position-relative">
+                        <img src="{{ asset('uploads/' ~ product.image) }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;" alt="Couverture actuelle">
+                        <div class="mt-3 text-muted fs-sm">Image actuelle</div>
+                    </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <div class="file-upload-wrapper">
+                        {{ form_widget(form.image, {
+                            'attr': {
+                                'class': 'form-control visually-hidden',
+                                'onchange': 'previewImage(this)'
+                            }
+                        }) }}
+                        <label for="{{ form.image.vars.id }}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-upload me-2"></i>Choisir un fichier
+                        </label>
+                        <div class="invalid-feedback d-block fs-sm">
+                            {{ form_errors(form.image)|striptags }}
+                        </div>
+                    </div>
+                    <small class="text-muted d-block mt-2 fs-sm">Formats supportés : JPG, PNG, JPEG (Max 2MB)</small>
+                </div>
+                
+                {# Aperçu de l'image #}
+                <div class="mt-4 d-none" id="imagePreviewContainer">
+                    <div class="border-dashed rounded-3 p-3">
+                        <img src="#" class="img-fluid rounded-2 mb-3" id="imagePreview" alt="Aperçu de l'image">
+                        <div class="w-100 text-end">
+                            <button type="button" class="btn btn-danger rounded-pill shadow-sm px-4" onclick="removeImage()">
+                                <i class="bi bi-trash me-1"></i>Supprimer l'aperçu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Section des boutons de soumission #}
+    <div class="d-flex justify-content-end gap-3 border-top pt-5">
+  <a href="{{ path('app_product_index') }}" class="btn btn-outline-danger btn-lg d-flex align-items-center">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </a>
+
+    {% if app.request.attributes.get('_route') == 'app_product_edit' %}
+        {# Lorsque nous sommes dans l'interface de modification, le bouton "Enregistrer" est remplacé par "Modifier" #}
+        <button type="submit" class="btn btn-lg btn-primary px-5">
+            <i class="bi bi-pencil me-2"></i>Modifier
+        </button>
+        
+    {% else %}
+        {# Si ce n'est pas la route de modification, on garde le bouton "Enregistrer" #}
+        <button type="submit" class="btn btn-lg btn-primary px-5">
+            <i class="bi bi-check2-circle me-2"></i>{{ button_label|default('Enregistrer') }}
+        </button>
+    {% endif %}
+</div>
+
+    {{ form_end(form) }}
+</div>
+</div>
+</div>
+
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        const container = document.getElementById('imagePreviewContainer');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                container.classList.remove('d-none');
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removeImage() {
+        const input = document.getElementById('{{ form.image.vars.id }}');
+        input.value = '';
+        document.getElementById('imagePreview').src = '#';
+        document.getElementById('imagePreviewContainer').classList.add('d-none');
+        input.dispatchEvent(new Event('change'));
+    }
+</script>
+
+<style>
+    .form-product .form-floating > label {
+        padding: 0.8rem 1.2rem;
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-sm, .form-select-sm {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .form-control-lg {
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+    }
+
+    .form-select-lg {
+        padding: 1rem 1.5rem;
+        background-position: right 1.5rem center;
+    }
+
+    .border-dashed {
+        border: 2px dashed #e9ecef;
+        border-radius: 1rem;
+    }
+
+    .file-upload-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .invalid-feedback {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+
+    .is-invalid ~ .invalid-feedback {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .card {
+        border-radius: 1.25rem;
+    }
+
+    .input-group-text {
+        border-radius: 0 0.75rem 0.75rem 0;
+        background-color: #f8f9fa;
+        border-left: 0;
+    }
+    
+    .form-floating > label {
+        font-weight: normal;
+        color: #6c757d;
+    }
+</style>

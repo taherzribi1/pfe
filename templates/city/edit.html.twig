@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une sous-catégorie{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">
+        <i class="fa-solid fa-pen-to-square me-2"></i>Modifier une Sous-Catégorie
+    </h1>
+
+    <div class="card shadow-lg">
+        <div class="card-body">
+            {{ include('city/_form.html.twig') }}
+
+            <div class="d-flex gap-3 align-items-center mt-4">
+                <button type="submit" form="city_form" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>Modifier
+                </button>
+                
+                
+
+                {{ include('city/_delete_form.html.twig') }}
+                <a href="{{ path('app_city_index') }}" class="btn btn-outline-danger d-flex align-items-center">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

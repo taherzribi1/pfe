@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sous-Catégorie{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-folder me-2"></i>Sous-Catégorie</h1>
+
+    <div class="card shadow-sm">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="bg-light text-dark py-3"><i class="bi bi-key me-2"></i>ID</th>
+                    <th class="bg-light text-dark py-3"><i class="bi bi-tag me-2"></i>Nom</th>
+                    <th class="bg-light text-dark py-3"><i class="bi bi-tag me-2"></i>Catégorie parente</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-muted">{{ sub_category.id }}</td>
+                    <td class="text-primary">{{ sub_category.name }}</td>
+                    <td class="text-primary">{{ sub_category.category.name }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <a href="{{ path('app_sub_category_edit', {'id': sub_category.id}) }}" class="btn btn-primary btn-lg rounded-pill shadow-sm px-4">
+            <i class="bi bi-pencil-square me-2"></i>Modifier
+        </a>
+
+        <!-- Bouton pour ouvrir le modal -->
+        <button class="btn btn-danger btn-lg rounded-pill shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            <i class="bi bi-trash3 me-2"></i>Supprimer
+        </button>
+
+        <a href="{{ path('app_sub_category_index') }}" class="btn btn-outline-secondary btn-lg rounded-pill shadow-sm px-4">
+            <i class="bi bi-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                  Voulez-vous vraiment supprimer cette sous-catégorie "{{ sub_category.name }}" ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form method="post" action="{{ path('app_sub_category_delete', {'id': sub_category.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sub_category.id) }}">
+                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

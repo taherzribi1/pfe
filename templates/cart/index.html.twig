@@ -1,0 +1,279 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+             {% include "layouts/flash_msg.html.twig" %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold text-primary">
+                <i class="bi bi-cart3 me-2"></i>Mon Panier
+            </h1>
+            {% if total > 0 %}
+                <h3 class="fw-bold text-success">Total: {{ total }} TND</h3>
+            {% endif %}
+        </div>
+
+        {% if items|length > 0 %}
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">Produit</th>
+                                    <th scope="col">Prix unitaire</th>
+                                    <th scope="col">Quantité</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('uploads/images/' ~ item.product.image) }}" 
+                                                     class="me-3 img-thumbnail" 
+                                                     style="width: 60px; height: 60px; ">
+                                                <div>
+                                                    <h6 class="mb-0">{{ item.product.name }}</h6>
+                                                    {% if item.quantity >= item.product.stock %}
+                                                        <div class="text-danger small">Quantité maximale atteinte</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ item.product.price }} TND</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="{{ path('app_cart_decrease', {'id': item.product.id}) }}" 
+                                                   class="btn btn-sm btn-outline-secondary rounded-circle me-2" 
+                                                   style="width: 30px; height: 30px; line-height: 18px;">
+                                                    <i class="bi bi-dash"></i>
+                                                </a>
+                                                <span class="fw-bold">{{ item.quantity }}</span>
+                                                <a href="{{ path('app_cart_increase', {'id': item.product.id}) }}" 
+                                                   class="btn btn-sm btn-outline-primary rounded-circle ms-2 {% if item.quantity >= item.product.stock %}disabled{% endif %}" 
+                                                   style="width: 30px; height: 30px; line-height: 18px;">
+                                                    <i class="bi bi-plus"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold">{{ item.product.price * item.quantity }} TND</td>
+                                        <td>
+                                           <!-- Formulaire de suppression avec modal -->
+<form method="post" action="{{ path('app_cart_product_remove', {'id': item.product.id}) }}" class="d-inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.product.id) }}">
+
+    <!-- Bouton pour ouvrir le modal -->
+    <button type="button" 
+            class="btn btn-sm btn-outline-danger" 
+            data-bs-toggle="modal" 
+            data-bs-target="#deleteModal{{ item.product.id }}" 
+            title="Supprimer">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>
+
+<!-- Modal de confirmation -->
+<div class="modal fade" id="deleteModal{{ item.product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.product.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel{{ item.product.id }}">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Voulez-vous vraiment supprimer <strong>{{ item.product.name }}</strong> de votre panier ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <!-- Bouton de soumission -->
+                <form method="post" action="{{ path('app_cart_product_remove', {'id': item.product.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.product.id) }}">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <div>
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-success">
+                        <i class="bi bi-arrow-left me-2"></i>Continuer vos achats
+                    </a>
+                    <a href="{{ path('app_cart_remove') }}" class="btn btn-outline-danger ms-2">
+                        <i class="bi bi-trash me-2"></i>Vider le panier
+                    </a>
+                </div>
+                
+                <!-- Bouton Valider la commande avec condition sur l'inscription -->
+                {% if app.user %}
+                    <a href="{{ path('app_order') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Passer la commande
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-warning btn-lg px-4">
+                        <i class="bi bi-lock me-2"></i>Connectez-vous pour passer la commande
+                    </a>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-cart-x text-muted" style="font-size: 5rem;"></i>
+                </div>
+                <h3 class="fw-bold text-muted">Votre panier est vide</h3>
+                <p class="text-muted mb-4">Commencez par ajouter des produits à votre panier</p>
+                <a href="{{ path('app_home') }}" class="btn btn-primary">
+                    <i class="bi bi-shop me-2"></i>Découvrir nos produits
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+<footer class="bg-dark text-white pt-5 pb-4">
+  <div class="container">
+    <div class="row gy-4">
+      <!-- Logo et description -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-book-open fa-2x text-primary me-2" aria-hidden="true"></i>
+          <span class="fs-4 fw-bold">Le Coin des Livres</span>
+        </div>
+        <p class="text-light opacity-85 mb-4">
+          Découvrez des milliers de livres dans tous les genres littéraires. Nous apportons la lecture à votre porte !
+        </p>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-primary btn-sm rounded-circle"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="btn btn-info btn-sm rounded-circle"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="btn btn-danger btn-sm rounded-circle"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="btn btn-success btn-sm rounded-circle"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+
+      <!-- Liens rapides -->
+      <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Navigation</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a href="{{path('app_home')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-home text-primary me-2"></i> Accueil
+            </a>
+          </li>
+          
+          <li class="mb-2">
+            <a href="{{path('app_about')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-info-circle text-primary me-2"></i> À propos
+            </a>
+          </li>
+          
+<li class="mb-2">
+            <a href="{{path('app_services')}}" class="text-light text-decoration-none hover-primary">
+              <i class="fas fa-hand-holding-heart text-primary me-2"></i> Services
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+     
+      <!-- Contact -->
+       <div class="col-lg-3 col-md-6">
+        <h5 class="text-uppercase fw-bold mb-4">Contactez-nous</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+            <span class="text-light opacity-85">Rue Afrane km 4.5, Sfax</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-phone-alt text-primary me-2"></i>
+            <span  class="text-light opacity-85">+216 55447998</span>
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-envelope text-primary me-2"></i>
+            <span  class="text-light opacity-85">contact@lecoindeslivres.com</span>
+          </li>
+          <li>
+            <i class="fas fa-clock text-primary me-2"></i>
+            <span class="text-light opacity-85">Lun-Ven : 9h-18h</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr class="my-4 border-light opacity-25">
+
+    <!-- Section copyright -->
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        <p class="small mb-0 text-light opacity-85">&copy; 2025 Le Coin des Livres. Tous droits réservés.</p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="#" class="text-light text-decoration-none me-3 hover-primary">Confidentialité</a>
+        <a href="#" class="text-light text-decoration-none hover-primary">Conditions d'utilisation</a>
+      </div>
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <style>
+        footer a {
+            transition: all 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: var(--bs-primary) !important;
+            text-decoration: underline !important;
+        }
+        
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Activer les tooltips Bootstrap
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        })
+    </script>
+{% endblock %}

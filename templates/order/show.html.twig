@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+{% block title %}Détails de commande{% endblock %}
+{% block body %}
+    <div class="container my-5">
+        <div class="card shadow-lg">
+            <div class="card-header bg-gradient-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0" style="color:black;"><i class="fas fa-receipt me-2"></i>Commande n°{{order.id}}</h2>
+                    <span class="badge bg-{{order.isCompleted ? 'danger' : 'success'}} rounded-pill p-2">
+                        {{order.isCompleted ? 'Livrée' : 'En cours'}}
+                    </span>
+                </div>
+                <small class="text-white-50">Date: {{order.createAt|date('d/m/Y H:i')}}</small>
+            </div>
+            
+            <div class="card-body">
+                <!-- Section Informations client -->
+                <div class="mb-5">
+                    <h4 class="text-primary mb-4 border-bottom pb-2">
+                        <i class="fas fa-user-circle me-2"></i>Informations du client
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">{{order.firstName}} {{order.lastName}}</h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-phone me-2"></i> {{order.phone}}<br>
+                                        <i class="fas fa-map-marker-alt me-2"></i> {{order.adresse}}<br>
+                                        <i class="fas fa-city me-2"></i> {{order.city.name}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-info">
+                                <div class="card-body">
+                                    <h5 class="text-primary mb-2 ">Adresse de livraison</h5>
+                                    <p class="card-text">
+                                        <strong>Coût de livraison:</strong> {{order.city.shippingCost}} TND<br>
+                                        <strong>Adresse complète:</strong><br>
+                                        {{order.adresse}}, {{order.city.name}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Produits -->
+                <div class="mb-5">
+                    <h4 class="text-primary mb-4 border-bottom pb-2">
+                        <i class="fas fa-shopping-basket me-2"></i>Détails de la commande
+                    </h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 80px;">Image</th>
+                                    <th>Produit</th>
+                                    <th>Auteur</th>
+                                    <th class="text-end">Prix unitaire</th>
+                                    <th class="text-center">Quantité</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in order.orderProducts %}
+                                    <tr>
+                                        <td>
+                                            <img src="{{ asset('uploads/images/' ~ product.product.image) }}" 
+                                                 class="img-thumbnail" 
+                                                 style="width:60px; height:80px; object-fit:cover;">
+                                        </td>
+                                        <td class="align-middle">{{product.product.name}}</td>
+                                        <td class="align-middle">{{product.product.auteur}}</td>
+                                        <td class="align-middle text-end">{{product.product.price}} TND</td>
+                                        <td class="align-middle text-center">{{product.qte}}</td>
+                                        <td class="align-middle text-end fw-bold">{{product.product.price * product.qte}} TND</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Section Total -->
+                <div class="row justify-content-end">
+                    <div class="col-md-5">
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Total à payer</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Total produits:</span>
+                                    <strong>{{order.totalPrice}} TND</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>Frais de livraison:</span>
+                                    <strong>{{order.city.shippingCost}} TND</strong>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold fs-4 text-success">
+                                    <span>Total général:</span>
+                                    <strong>{{order.totalPrice + order.city.shippingCost}} TND</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-4">
+                {% if not order.isCompleted %}
+    <a href="{{path('app_orders_is_completed_update',{'id':order.id})}}" 
+       class="btn btn-success me-2">
+        <i class="fas fa-check-circle me-2"></i> Marquer comme livrée
+    </a>
+   {% endif %}
+    <a href="{{path('app_bill', {'id':order.id})}}" 
+       class="btn btn-primary me-2">
+        <i class="fas fa-print me-2"></i> Imprimer la facture
+    </a>
+    
+    <!-- Bouton pour ouvrir le modal -->
+<a href="#" 
+   class="btn btn-sm btn-warning ms-1 d-flex justify-content-center align-items-center" 
+   style="width: 120px;" 
+   data-bs-toggle="modal" 
+   data-bs-target="#archiveOrderModal">
+    <i class="fas fa-archive me-2"></i> Archiver
+</a>
+
+<!-- Modal -->
+<div class="modal fade" id="archiveOrderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmer l'archivage</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir archiver cette commande ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <a href="{{ path('app_ordes_archive', {'id': order.id}) }}" class="btn btn-warning">Confirmer</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+                
+               
+            </div>
+        </div>
+    </div>
+{% endblock %}
